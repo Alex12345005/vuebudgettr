@@ -2,6 +2,7 @@
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 import CashFlow from './components/CashFlow.vue'
+import AllCashflows from './components/AllCashflows.vue'
 </script>
 
 <template>
@@ -9,12 +10,13 @@ import CashFlow from './components/CashFlow.vue'
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <HelloWorld msg="Budgettr!" />
     </div>
   </header>
 
   <main>
     <CashFlow />
+    <AllCashflows/>
     <TheWelcome />
   </main>
 </template>

@@ -82,7 +82,7 @@
 import TableBody from "./TableBody.vue";
 import Notification from "./Notification.vue";
 import axios from 'axios';
-
+import moment from "moment";
 
 export default {
   name: "CashFlow",
@@ -134,7 +134,7 @@ export default {
 
       const className = total >= 0 ? "has-text-success" : "has-text-danger";
 
-      return `<span class="${className}">ttt</span>`
+      //return `<span class="${className}">ttt</span>`
     },
   },
 
@@ -155,18 +155,18 @@ export default {
 
     addCashflow() {
       console.log("Tag is ", this.tag)
-
-      console.log("Amount is ", this.amount)
-
+      console.log("Amount is ", this.balance)
       console.log("Type is ", this.type)
-      var absolute_amount = this.amount
+      var absolute_amount = this.balance
       if (this.type == "cost") {
         absolute_amount = -absolute_amount
       }
-      axios.post('/api/cashflow', {
+      const post_value={
         amount: absolute_amount,
-        date: 
-      })
+        date: moment().format(),
+      }
+      console.log("Post is: ", post_value)
+      axios.post('/api/cashflow/', post_value)
         .then(function (response) {
           console.log(response);
         })
