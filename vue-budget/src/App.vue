@@ -16,8 +16,6 @@ import AllCashflows from './components/AllCashflows.vue'
 
   <main>
     <CashFlow />
-    <AllCashflows/>
-    <TheWelcome />
   </main>
 </template>
 

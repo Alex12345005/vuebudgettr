@@ -49,25 +49,20 @@
             </h4>
           </div>
         </div>
-
+        <div>
+          <ul>
+            <li v-for="cashflow in cashFlow">
+              {{ cashflow.amount }}
+            </li>
+          </ul>
+        </div>
         <transition name="fade-balance" :duration="150">
           <hr class="divide" v-if="cashFlowIsNotEmpty">
         </transition>
       </div>
-
-      <transition name="fade-balance" :duration="150">
-        <div class="column is-6 is-offset-3" v-if="cashFlowIsNotEmpty">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-              <th class="has-text-centered">Amount</th>
-              <th class="has-text-centered">Type</th>
-              <th class="has-text-centered">Actions</th>
-            </thead>
-            <!-- <TableBody :cash-flow="cashFlow" :tagy="tag" :currencyFormat="getCurrencyFormat"
-              :removeRow="removeRow"></TableBody> -->
-          </table>
+        <div class="total-balance">
+          Gesamtsaldo: <span class="amount">{{ total_CashFlow }}</span>
         </div>
-      </transition>
     </div>
 
     <Notification v-if="saveNotification" message="Cash flow saved into local storage."
@@ -83,6 +78,7 @@ import TableBody from "./TableBody.vue";
 import Notification from "./Notification.vue";
 import axios from 'axios';
 import moment from "moment";
+import App from "../App.vue";
 
 export default {
   name: "CashFlow",
@@ -136,6 +132,15 @@ export default {
 
       //return `<span class="${className}">ttt</span>`
     },
+    total_CashFlow() {
+      let total = 0;
+
+      this.cashFlow.map(({ type, amount }) => {
+        total += type === 'cost' ? -amount : amount;
+      });
+
+      return total;
+    },
   },
 
   methods: {
@@ -161,7 +166,7 @@ export default {
       if (this.type == "cost") {
         absolute_amount = -absolute_amount
       }
-      const post_value={
+      const post_value = {
         amount: absolute_amount,
         date: moment().format(),
       }
@@ -169,6 +174,8 @@ export default {
       axios.post('/api/cashflow/', post_value)
         .then(function (response) {
           console.log(response);
+          this.get_cashflows()
+
         })
         .catch(function (error) {
           console.log(error);
@@ -182,9 +189,29 @@ export default {
       this.saveNotification = false;
       this.flushNotification = true;
     },
+
+    get_cashflows() {
+
+      axios.get('/api/cashflow/')
+        .then((response) => {
+          console.log("Axios Response: ", response);
+          console.log("Cashflow", this.cashFlow)
+          this.cashFlow = response.data;
+          console.log("Cashflow", this.cashFlow)
+        })
+        .catch(function (error) {
+          console.error("Axios Error", error);
+        });
+      //console.log(amount)
+      //console.log(date)
+    },
+
+
+
   },
   mounted() {
     const savedBalance = localStorage.getItem('vue-cash-flow-balance');
+    this.get_cashflows()
   },
 };
 </script>
